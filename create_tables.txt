@@ -1,0 +1,6 @@
+CREATE SCHEMA IF NOT EXISTS bl;
+SET search_path TO bl;
+CREATE TABLE liga (liga_nr int NOT NULL, verband varchar NOT NULL, erstaustragung date NOT NULL, meister int NOT NULL, rekordspieler varchar NOT NULL, spiele_rekordspieler int NOT NULL);
+CREATE TABLE spiel (spiel_id integer NOT NULL, spieltag integer, datum date, uhrzeit time without time zone, heim integer NOT NULL, gast integer NOT NULL, tore_heim integer, tore_gast integer);
+CREATE TABLE spieler (spieler_id integer NOT NULL, vereins_id integer NOT NULL, trikot_nr integer, s_name character varying(50) NOT NULL, land character varying(10) NOT NULL, spiele integer, tore integer, vorlagen integer);
+CREATE TABLE verein (v_id integer NOT NULL, name character varying(50) NOT NULL, liga integer NOT NULL);

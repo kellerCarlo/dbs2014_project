@@ -1,0 +1,14 @@
+ALTER TABLE Liga DROP COLUMN Rekordspieler;
+ALTER TABLE Liga DROP COLUMN Spiele_Rekordspieler;
+ALTER TABLE Liga DROP COLUMN Erstaustragung;
+ALTER TABLE Liga DROP COLUMN Verband;
+ALTER TABLE ONLY liga ADD CONSTRAINT liga_pkey PRIMARY KEY (liga_nr);
+ALTER TABLE ONLY spiel ADD CONSTRAINT spiel_pkey PRIMARY KEY (spiel_id);
+ALTER TABLE ONLY spieler ADD CONSTRAINT spieler_pkey PRIMARY KEY (spieler_id);
+ALTER TABLE ONLY verein ADD CONSTRAINT verein_name_key UNIQUE (name);
+ALTER TABLE ONLY verein ADD CONSTRAINT verein_pkey PRIMARY KEY (v_id);
+ALTER TABLE ONLY liga ADD CONSTRAINT liga_meister_fkey FOREIGN KEY (meister) REFERENCES verein(v_id);
+ALTER TABLE ONLY spiel ADD CONSTRAINT spiel_gast_fkey FOREIGN KEY (gast) REFERENCES verein(v_id);
+ALTER TABLE ONLY spiel ADD CONSTRAINT spiel_heim_fkey FOREIGN KEY (heim) REFERENCES verein(v_id);
+ALTER TABLE ONLY spieler ADD CONSTRAINT spieler_vereins_id_fkey FOREIGN KEY (vereins_id) REFERENCES verein(v_id);
+ALTER TABLE ONLY verein ADD CONSTRAINT verein_liga_fkey FOREIGN KEY (liga) REFERENCES liga(liga_nr);
