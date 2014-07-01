@@ -1,6 +1,6 @@
 @relation spiel
 
-@attribute Verein string
+@attribute Verein numeric
 @attribute Spieltag numeric
 @attribute Tore1 numeric
 @attribute Tore2 numeric

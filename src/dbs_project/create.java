@@ -8,7 +8,7 @@ import java.io.IOException;
 //Datenbank erstellen und füllen
 public class create {
 
-	public static void db_create(String db,String user, String password) {
+	public static void db_create(String db, String user, String password) {
 
 		Connection c = null;
 		Statement stmt = null;
