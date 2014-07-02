@@ -15,7 +15,7 @@ public class bundesliga {
 		 * Zum erstellen der Datenbank "bundesliga"
 		 * Fehlerhaft, wenn DB bereits existiert
 		 */
-		//	create.db_create(SRC, USER, PASSWORD);
+			create.db_create(SRC, USER, PASSWORD);
 		
 		/*
 		 * In Projektbeschreibung gegebene SELECT-Anfragen
@@ -23,12 +23,12 @@ public class bundesliga {
 		 * Nr 6 fehlt noch
 		 * 'select_e' ist zur eingabe eigener Select-Queries
 		 */
-			select.select1 (SRC + DBNAME, USER, PASSWORD); // erstes Saisonspiel
-		//	select.select2( SRC + DBNAME, USER, PASSWORD); // Torschützen
-		//	select.select3( SRC + DBNAME, USER, PASSWORD); // erster Spieltag -> Abend
-		//	select.select4( SRC + DBNAME, USER, PASSWORD); // Spieler bei 
-		//	select.select5( SRC + DBNAME, USER, PASSWORD); // Siege Hannover 96
-		//	select.select6( SRC + DBNAME, USER, PASSWORD); // schlechteste Mannschaft(en)
+		//	select.select1 (SRC + DBNAME, USER, PASSWORD);  // erstes Saisonspiel
+		//	select.select2( SRC + DBNAME, USER, PASSWORD);  // Torschützen
+		//	select.select3( SRC + DBNAME, USER, PASSWORD);  // erster Spieltag -> Abend
+		//	select.select4( SRC + DBNAME, USER, PASSWORD);  // Spieler bei 
+		//	select.select5( SRC + DBNAME, USER, PASSWORD);  // Siege Hannover 96
+		//	select.select6( SRC + DBNAME, USER, PASSWORD);  // schlechteste Mannschaft(en)
 		//	select.select_e( SRC + DBNAME, USER, PASSWORD); // für die Eingabe eigener Queries
 		
 		/*

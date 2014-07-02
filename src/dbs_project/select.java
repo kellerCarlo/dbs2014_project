@@ -128,11 +128,45 @@ public class select {
 	
 	public static void select6(String db, String user, String password) throws SQLException {
 		connect(db, user, password);
-		System.out.println("Meiste Niederlagen:");
-		
-		// TO BE FILLED
-		
-		System.out.println("Fehlen noch.");
+		System.out.print("Meiste Niederlagen: ");
+		ResultSet rs = stmt.executeQuery( "SELECT COUNT (v_id) FROM bl.verein;");
+		rs.next();
+		int v_count = rs.getInt(1);
+		int[] out = new int [1];
+		int most_l = 0;
+		for (int i = 1; i <= v_count; i++) {
+			rs = stmt.executeQuery( "SELECT COUNT (*) FROM bl.spiel WHERE ( heim = " + i + " AND tore_heim < tore_gast) OR ( gast = " + i + " AND tore_gast < tore_heim ) ;" );
+			rs.next();
+			if (rs.getInt(1) > most_l) {
+				out = new int[1];
+				most_l = rs.getInt(1);
+				out[0] = i;
+			} else if (rs.getInt(1) == most_l) {
+				int[] tmpArr = new int[out.length + 1];
+				for (int k = 0; k < out.length; k++) {
+					tmpArr[k] = out[k];
+				}
+				tmpArr[tmpArr.length-1] = i;
+				out = tmpArr;
+			}
+		}
+		System.out.println(most_l);
+		for (int j = 0; j < out.length;j++){
+			rs = stmt.executeQuery( "SELECT verein.name, spieler_id, trikot_nr, s_name FROM bl.spieler, bl.verein WHERE spieler.vereins_id = " + out[j] + " AND v_id  = " + out[j] + ";" );
+			while ( rs.next() ) {
+				String name = rs.getString("name");
+				int spieler_id = rs.getInt("spieler_id");
+				int trikot_nr = rs.getInt("trikot_nr");
+				String s_name = rs.getString("s_name");
+				System.out.print( "Verein: " + name + ";\t");
+				System.out.print( "S_ID: " + spieler_id + ";\t");
+				System.out.print( "Trikotnummer: " + trikot_nr + ";\t");
+				System.out.print( "Spieler: " + s_name + ";");
+				System.out.println();
+			}
+		}
+		rs.close();
+		System.out.println();
 		disconnect();
 	}
 
