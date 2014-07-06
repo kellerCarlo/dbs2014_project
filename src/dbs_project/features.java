@@ -19,11 +19,12 @@ public class features {
 		System.out.println("Erstelle \".arff\"-Dateien");
 
 		connect();
-		letzte3e();
-		letzte3g();
-		niederlagen5();
-		siege5();
-		draw5();
+		all_features();
+		//letzte3e();
+		//letzte3g();
+		//niederlagen5();
+		//siege5();
+		//draw5();
 		
 		stmt.close();
 		c.close();
@@ -42,6 +43,84 @@ public class features {
 		}
 	}
 		
+	private static void all_features() throws IOException {
+		File file = new File ("features.arff");
+		file.createNewFile();
+		FileWriter writer = new FileWriter(file);
+		writer.write("@relation spiel\n\n");
+		writer.write("@attribute Verein numeric\n");
+		writer.write("@attribute Spieltag numeric\n");
+		writer.write("@attribute letzte3Tore numeric\n");
+		writer.write("@attribute letzte3GTore numeric\n");
+		writer.write("@attribute niederlagen5 numeric\n");
+		writer.write("@attribute siege5 numeric\n");
+		writer.write("@attribute draws5 numeric\n\n");
+		writer.write("@data\n");
+		try {
+			stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery( "SELECT COUNT (v_id) FROM bl.verein;");
+			rs.next();
+			int v_count = rs.getInt(1);
+			for (int i = 1; i <= v_count; i++) {
+				rs = stmt.executeQuery( "SELECT COUNT (*) FROM bl.spiel WHERE ( heim = " + i + " OR gast = " + i + " );" );
+				rs.next();
+				int s_count = rs.getInt(1);
+				for (int j = s_count; j > 3 ; j--) {
+					output = "";
+					//Verein und Spieltag schreiben
+					output = output + i + "," + j;
+					//Tore und Gegentore der letzten 3 Spiele
+					rs = stmt.executeQuery( "SELECT * FROM bl.spiel WHERE (spieltag < " + j + ") AND (heim = " + i + "OR gast = " + i + ") ORDER BY spieltag DESC LIMIT 3;" );
+					int temp_e = 0;
+					int temp_g = 0;
+					while (rs.next()) {
+						if (rs.getInt("heim") == i) {
+							temp_e += rs.getInt("tore_heim");
+							temp_g += rs.getInt("tore_gast");
+						} else {
+							temp_g += rs.getInt("tore_heim");
+							temp_e += rs.getInt("tore_gast");
+						}
+					}
+					output = output + "," + temp_e + "," + temp_g;
+					//Niederlagen, Siege, Unentschieden der letzten 5 Spiele
+					rs = stmt.executeQuery( "SELECT * FROM bl.spiel WHERE (spieltag < " + j + ") AND (heim = " + i + "OR gast = " + i + ") ORDER BY spieltag DESC LIMIT 5;" );
+					int temp_n = 0;
+					int temp_s = 0;
+					int temp_u = 0;
+					while (rs.next()) {
+						if (rs.getInt("heim") == i) {
+							if ( rs.getInt("tore_heim") < rs.getInt("tore_gast") ) {
+								temp_n++;
+							} else if (rs.getInt("tore_heim") > rs.getInt("tore_gast")) {
+								temp_s++;
+							} else {
+								temp_u++;
+							}
+						} else {
+							if ( rs.getInt("tore_heim") > rs.getInt("tore_gast") ) {
+								temp_n++;
+							} else if (rs.getInt("tore_heim") < rs.getInt("tore_gast")) {
+								temp_s++;
+							} else {
+								temp_u++;
+							}
+						}
+					}
+					output = output + "," + temp_n + "," + temp_s + "," + temp_u;
+					output = output + "\n";
+					writer.write(output);
+				}
+			}
+			writer.flush();
+			writer.close();
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+			System.exit(0);
+		}
+		System.out.println("Kombinierte Features");		
+	}
+	
 	private static void letzte3e() throws IOException {	
 		File file = new File ("letzte_3e.arff");
 		file.createNewFile();

@@ -15,7 +15,7 @@ public class bundesliga {
 		 * Zum erstellen der Datenbank "bundesliga"
 		 * Fehlerhaft, wenn DB bereits existiert
 		 */
-			create.db_create(SRC, USER, PASSWORD);
+		//	create.db_create(SRC, USER, PASSWORD);
 		
 		/*
 		 * In Projektbeschreibung gegebene SELECT-Anfragen
@@ -23,7 +23,7 @@ public class bundesliga {
 		 * Nr 6 fehlt noch
 		 * 'select_e' ist zur eingabe eigener Select-Queries
 		 */
-		//	select.select1 (SRC + DBNAME, USER, PASSWORD);  // erstes Saisonspiel
+			select.select1 (SRC + DBNAME, USER, PASSWORD);  // erstes Saisonspiel
 		//	select.select2( SRC + DBNAME, USER, PASSWORD);  // Torschützen
 		//	select.select3( SRC + DBNAME, USER, PASSWORD);  // erster Spieltag -> Abend
 		//	select.select4( SRC + DBNAME, USER, PASSWORD);  // Spieler bei 
@@ -35,7 +35,7 @@ public class bundesliga {
 		 * Erstellt .arff-Dateien für geforderte und eigene Features
 		 * DB muss existieren
 		 */
-		//	features.open_up(SRC + DBNAME, USER, PASSWORD);
+			features.open_up(SRC + DBNAME, USER, PASSWORD);
 	}
 
 }
