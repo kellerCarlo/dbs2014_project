@@ -6,88 +6,74 @@ import java.io.FileReader;
 import java.io.IOException;
 
 //Datenbank erstellen und füllen
+/**
+ * Klasse erstellt die Datenbank.
+ * 
+ * @author Gruppenarbeit
+ * @version 1.1
+ */
 public class create {
 
-	public static void db_create(String db, String user, String password) {
+	/**
+	 * Erstellt die Datenbank von Grund auf.<br>
+	 * Führt zu Fehlern, wenn Datenbank bereits existiert.
+	 * 
+	 * @param db Hostadresse für Postgres
+	 * @param dbname Name der zu erzeugenden Datenbank
+	 * @param user Benutzername für Datenbank
+	 * @param password Passwort für Datenbank
+	 * @throws ClassNotFoundException Exception für Postgres-Verbindung benötigt
+	 * @throws SQLException Exception für Datenbankzugriffe benötigt
+	 * @throws IOException Exception für Dateizugriffe benötigt
+	 */
+	public static void db_create(String db, String dbname, String user, String password) throws ClassNotFoundException, SQLException, IOException {
 
 		Connection c = null;
 		Statement stmt = null;
 		String query = null;
-		final String DBNAME = "bundesliga";
 
 		//Mit PostgreSQL verbinden		
-		try {
-			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection(db, user, password);
-			
-		} catch (Exception e) {
-			System.err.println(e.getClass().getName()+": "+e.getMessage());
-			System.exit(0);
-		}
+		Class.forName("org.postgresql.Driver");
+		c = DriverManager.getConnection(db, user, password);
 		System.out.println("Verbindung erfolgreich hergestellt");
 		
 		//Datenbank erstellen
-		try {
-			stmt = c.createStatement();
-			query = "CREATE DATABASE " + DBNAME + ";";
-			stmt.execute( query );
-			c = DriverManager.getConnection(db + DBNAME, user, password);
-			System.out.println("Datenbank erfolgreich erstellt");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println(e.getClass().getName()+": "+e.getMessage());
-			System.exit(0);
-		}
-			
+		stmt = c.createStatement();
+		query = "CREATE DATABASE " + dbname + ";";
+		stmt.execute( query );
+		c = DriverManager.getConnection(db + dbname, user, password);
+		System.out.println("Datenbank erfolgreich erstellt");
+		
 		//Tabellen erzeugen
 		String file = "create_tables.txt";
-		try {
-	    	stmt = c.createStatement();
-	    	BufferedReader in = new BufferedReader(new FileReader(file));
-		    while ((query = in.readLine()) != null) {
-		    	stmt.executeUpdate(query);
-		    }
-		    in.close();
-		    System.out.println("Tabellen erfolgreich erstellt");
-		} catch (IOException e) {
-			System.out.println("Exception: IO");
-		} catch ( Exception e ) {
-			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-			System.exit(0);
-		}
-		
+		stmt = c.createStatement();
+    	BufferedReader in = new BufferedReader(new FileReader(file));
+	    while ((query = in.readLine()) != null) {
+	    	stmt.executeUpdate(query);
+	    }
+	    in.close();
+	    System.out.println("Tabellen erfolgreich erstellt");
+	
 		//Tabellen füllen
 		file = "insert_values.txt";
-		try {
-		    BufferedReader in = new BufferedReader(new FileReader(file));
-		    while ((query = in.readLine()) != null) {
-		    	stmt.executeUpdate(query);
-		    }
-			System.out.println("Tabellen erfolgreich gefüllt");
-		    in.close();
-		} catch (IOException e) {
-			System.out.println("Exception: IO");
-		} catch ( Exception e ) {
-			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-			System.exit(0);
-		}
-		
+		in = new BufferedReader(new FileReader(file));
+	    while ((query = in.readLine()) != null) {
+	    	stmt.executeUpdate(query);
+	    }
+		System.out.println("Tabellen erfolgreich gefüllt");
+	    in.close();	
+	    
 		//Tabellen ändern
 		file = "alter_tables.txt";
-		try {
-		    BufferedReader in = new BufferedReader(new FileReader(file));
-		    while ((query = in.readLine()) != null) {
-		    	stmt.executeUpdate(query);
-		    }
-			System.out.println("Tabellen erfolgreich geändert");
-		    in.close();
-			stmt.close();
-			c.close();
-		} catch (IOException e) {
-			System.out.println("Exception: IO");
-		} catch ( Exception e ) {
-			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-			System.exit(0);
+		in = new BufferedReader(new FileReader(file));
+	    while ((query = in.readLine()) != null) {
+	    	stmt.executeUpdate(query);
+	    }
+		System.out.println("Tabellen erfolgreich geändert");
+		
+		//Verbindungen schließen
+	    in.close();
+		stmt.close();
+		c.close();
 		}
-	}
 }		
