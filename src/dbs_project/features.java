@@ -49,12 +49,14 @@ public class features {
 		FileWriter writer = new FileWriter(file);
 		writer.write("@relation spiel\n\n");
 		writer.write("@attribute Verein numeric\n");
+		writer.write("@attribute Name string\n");
 		writer.write("@attribute Spieltag numeric\n");
 		writer.write("@attribute letzte3Tore numeric\n");
 		writer.write("@attribute letzte3GTore numeric\n");
 		writer.write("@attribute niederlagen5 numeric\n");
 		writer.write("@attribute siege5 numeric\n");
-		writer.write("@attribute draws5 numeric\n\n");
+		writer.write("@attribute draws5 numeric\n");
+		writer.write("@attribute real_outcome {Sieg, Unentschieden, Niederlage}\n\n");
 		writer.write("@data\n");
 		try {
 			stmt = c.createStatement();
@@ -62,13 +64,17 @@ public class features {
 			rs.next();
 			int v_count = rs.getInt(1);
 			for (int i = 1; i <= v_count; i++) {
+				rs = stmt.executeQuery(" SELECT name FROM bl.verein WHERE v_id = " + i + " ;");
+				String vName = "";
+				rs.next();
+				vName = rs.getString(1);
 				rs = stmt.executeQuery( "SELECT COUNT (*) FROM bl.spiel WHERE ( heim = " + i + " OR gast = " + i + " );" );
 				rs.next();
 				int s_count = rs.getInt(1);
 				for (int j = s_count; j > 3 ; j--) {
 					output = "";
 					//Verein und Spieltag schreiben
-					output = output + i + "," + j;
+					output = output + i + ",'" + vName + "'," + j;
 					//Tore und Gegentore der letzten 3 Spiele
 					rs = stmt.executeQuery( "SELECT * FROM bl.spiel WHERE (spieltag < " + j + ") AND (heim = " + i + "OR gast = " + i + ") ORDER BY spieltag DESC LIMIT 3;" );
 					int temp_e = 0;
@@ -108,6 +114,26 @@ public class features {
 						}
 					}
 					output = output + "," + temp_n + "," + temp_s + "," + temp_u;
+					//Tatsächliches Ergebnis
+					rs = stmt.executeQuery( "SELECT * FROM bl.spiel WHERE (spieltag = " + j + ") AND (heim = " + i + "OR gast = " + i + ") ;" );
+					rs.next();
+					if (rs.getInt("heim") == i) {
+						if ( rs.getInt("tore_heim") > rs.getInt("tore_gast") ) {
+							output = output +  ",Sieg";
+						} else if (rs.getInt("tore_heim") > rs.getInt("tore_gast")) {
+							output = output + ",Niederlage";
+						} else {
+							output = output + ",Unentschieden";
+						}
+					} else {
+						if ( rs.getInt("tore_heim") > rs.getInt("tore_gast") ) {
+							output = output + ",Niederlage";
+						} else if (rs.getInt("tore_heim") < rs.getInt("tore_gast")) {
+							output = output + ",Sieg";
+						} else {
+							output = output + ",Unentschieden";
+						}
+					}
 					output = output + "\n";
 					writer.write(output);
 				}
